@@ -2,38 +2,241 @@
 
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Padanito - Calculadora</title>
+<meta charset="UTF-8">
+<title>Padanito Repostería - Calculadora</title>
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
+<style>
+body {
+    font-family: Arial;
+    background: #FFF3E6;
+    text-align: center;
+    padding: 20px;
+}
+
+h1 { color: #8E44FF; }
+
+.contenedor {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 750px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+input {
+    padding: 6px;
+    margin: 3px;
+    width: 100px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px;
+    background: #E7A6FF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #8E44FF;
+    color: white;
+}
+
+.titulo-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.resultado {
+    margin-top: 10px;
+    font-weight: bold;
+    color: green;
+}
+
+/* SOLO ESTO SE AGREGÓ */
+.logo {
+    width: 120px;
+    display: block;
+    margin: 0 auto 10px;
+}
+</style>
+
 </head>
 
 <body>
 
-  <h1>Calculadora de Costos Padanito</h1>
+<!-- LOGO AGREGADO -->
 
-  <h2>Regla de Tres</h2>
-  <input type="number" id="valor1" placeholder="Valor 1">
-  <input type="number" id="valor2" placeholder="Valor 2">
-  <input type="number" id="valor3" placeholder="Valor 3">
-  <button onclick="calcular()">Calcular</button>
+<img src="LOGO-2026.png" alt="Logo Padanito" class="logo">
 
-  <p id="resultado"></p>
+<h1>🧁 Padanito Repostería</h1>
 
-  <h2>Ingredientes por Unidad</h2>
+<!-- ================= REGLA DE TRES ================= -->
 
-  <input type="text" placeholder="Ingrediente 1">
-  <input type="text" placeholder="Ingrediente 2">
-  <input type="text" placeholder="Ingrediente 3">
-  <input type="text" placeholder="Ingrediente 4">
-  <input type="text" placeholder="Ingrediente 5">
-  <input type="text" placeholder="Ingrediente 6">
+<div class="contenedor">
 
-<br><br> <button onclick="limpiar()">Limpiar</button>
+<div class="titulo-flex">
+    <h2>📊 Ingredientes (Regla de tres)</h2>
+    <button onclick="limpiarTodo()">🧹 Limpiar</button>
+</div>
 
-  <script src="script.js"></script>
+<script>
+for(let i=1;i<=12;i++){
+document.write(`
+<div>
+<input placeholder="Producto ${i}">
+<input type="number" id="p${i}" placeholder="$ x 1000g">
+<input type="number" id="g${i}" placeholder="Gramos">
+<input type="text" id="r${i}" placeholder="Costo" readonly>
+</div>
+`);
+}
+</script>
+
+<button onclick="calcularGramos()">Calcular</button>
+
+<div class="resultado" id="totalGramos"></div>
+</div>
+
+<!-- ================= INGREDIENTES UNIDAD ================= -->
+
+<div class="contenedor">
+<h2>🥚 Ingredientes por unidad</h2>
+
+<script>
+for(let i=1;i<=6;i++){
+document.write(`
+<div>
+<input placeholder="Producto ${i}">
+<input type="number" id="u${i}" placeholder="Costo unitario">
+<input type="number" id="c${i}" placeholder="Cantidad">
+</div>
+`);
+}
+</script>
+
+<button onclick="calcularUnidades()">Calcular</button>
+
+<div class="resultado" id="totalUnidades"></div>
+</div>
+
+<!-- ================= COSTOS ================= -->
+
+<div class="contenedor">
+<h2>💰 Otros costos</h2>
+
+<input type="number" id="servicios" placeholder="Servicios">
+<input type="number" id="mano" placeholder="Mano de obra">
+<input type="number" id="ganancia" placeholder="Ganancia (%)">
+
+<button onclick="calcularTotal()">Calcular Total</button>
+
+<div class="resultado" id="totalFinal"></div>
+
+<h3>📦 Cantidad de productos</h3>
+<input type="number" id="cantidad">
+
+<button onclick="calcularUnidad()">Precio por unidad</button>
+
+<div class="resultado" id="precioUnidad"></div>
+</div>
+
+<script>
+let totalGramosGlobal = 0;
+let totalUnidadesGlobal = 0;
+let totalVentaGlobal = 0;
+
+// GRAMOS
+function calcularGramos(){
+    totalGramosGlobal = 0;
+
+    for(let i=1;i<=12;i++){
+        let precio = parseFloat(document.getElementById("p"+i).value)||0;
+        let gramos = parseFloat(document.getElementById("g"+i).value)||0;
+
+        let resultado = (precio * gramos)/1000;
+
+        document.getElementById("r"+i).value = "$"+resultado.toLocaleString();
+        totalGramosGlobal += resultado;
+    }
+
+    document.getElementById("totalGramos").innerHTML =
+    "Total gramos: $" + totalGramosGlobal.toLocaleString();
+}
+
+// UNIDADES
+function calcularUnidades(){
+    totalUnidadesGlobal = 0;
+
+    for(let i=1;i<=6;i++){
+        let costo = parseFloat(document.getElementById("u"+i).value)||0;
+        let cantidad = parseFloat(document.getElementById("c"+i).value)||0;
+
+        totalUnidadesGlobal += (costo * cantidad);
+    }
+
+    document.getElementById("totalUnidades").innerHTML =
+    "Total unidades: $" + totalUnidadesGlobal.toLocaleString();
+}
+
+// TOTAL
+function calcularTotal(){
+    let servicios = parseFloat(document.getElementById("servicios").value)||0;
+    let mano = parseFloat(document.getElementById("mano").value)||0;
+    let ganancia = parseFloat(document.getElementById("ganancia").value)||0;
+
+    let costoTotal = totalGramosGlobal + totalUnidadesGlobal + servicios + mano;
+
+    totalVentaGlobal = costoTotal + (costoTotal * (ganancia/100));
+
+    document.getElementById("totalFinal").innerHTML =
+    "Total a vender: $" + totalVentaGlobal.toLocaleString();
+}
+
+// PRECIO UNIDAD
+function calcularUnidad(){
+    let cantidad = parseInt(document.getElementById("cantidad").value);
+
+    if(!cantidad || cantidad <= 0){
+        document.getElementById("precioUnidad").innerHTML = "Cantidad inválida";
+        return;
+    }
+
+    let precio = totalVentaGlobal / cantidad;
+
+    document.getElementById("precioUnidad").innerHTML =
+    "Precio por unidad: $" + precio.toLocaleString();
+}
+
+// LIMPIAR TODO
+function limpiarTodo(){
+    // inputs
+    let inputs = document.querySelectorAll("input");
+
+    inputs.forEach(input => {
+        input.value = "";
+    });
+
+    // resultados
+    document.getElementById("totalGramos").innerHTML = "";
+    document.getElementById("totalUnidades").innerHTML = "";
+    document.getElementById("totalFinal").innerHTML = "";
+    document.getElementById("precioUnidad").innerHTML = "";
+
+    // variables
+    totalGramosGlobal = 0;
+    totalUnidadesGlobal = 0;
+    totalVentaGlobal = 0;
+}
+</script>
 
 </body>
 </html>
+
+

@@ -8,6 +8,12 @@ h1 {
 color: #8E44FF;
 }
 
+.logo {
+width: 120px;
+display: block;
+margin: 20px auto;
+}
+
 input {
 margin: 5px;
 padding: 8px;
@@ -19,3 +25,5 @@ border: none;
 padding: 10px;
 cursor: pointer;
 }
+
+
